@@ -52,11 +52,12 @@ class Ghost {
     this.color = color;
     this.prevCollisions = [];
     this.speed = 2;
+    this.scared = false;
   }
   draw() {
     c.beginPath();
     c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
-    c.fillStyle = this.color;
+    c.fillStyle = this.scared ? "blue" : this.color;
     c.fill();
     c.closePath();
   }
@@ -81,8 +82,23 @@ class Pellet {
   }
 }
 
+class PowerUp {
+  constructor({ position }) {
+    this.position = position;
+    this.radius = 8;
+  }
+  draw() {
+    c.beginPath();
+    c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
+    c.fillStyle = "white";
+    c.fill();
+    c.closePath();
+  }
+}
+
 const pellets = [];
 const boundaries = [];
+const powerUps = [];
 const ghosts = [
   new Ghost({
     position: {
@@ -350,6 +366,17 @@ map.forEach((row, i) => {
           })
         );
         break;
+
+      case "p":
+        powerUps.push(
+          new PowerUp({
+            position: {
+              x: j * Boudary.width + Boudary.width / 2,
+              y: i * Boudary.height + Boudary.height / 2,
+            },
+          })
+        );
+        break;
     }
   });
 });
@@ -460,7 +487,47 @@ function animate() {
     }
   }
 
-  for (let i = pellets.length - 1; 0 < i; i--) {
+  for (let i = ghosts.length - 1; 0 <= i; i--) {
+    const ghost = ghosts[i];
+    if (
+      Math.hypot(
+        ghost.position.x - player.position.x,
+        ghost.position.y - player.position.y
+      ) <
+      ghost.radius + player.radius
+    ) {
+      if (ghost.scared) {
+        ghosts.splice(i, 1);
+      } else {
+        cancelAnimationFrame(animationId);
+        console.log("los");
+      }
+    }
+  }
+
+  for (let i = powerUps.length - 1; 0 <= i; i--) {
+    const powerUp = powerUps[i];
+    powerUp.draw();
+    if (
+      Math.hypot(
+        powerUp.position.x - player.position.x,
+        powerUp.position.y - player.position.y
+      ) <
+      powerUp.radius + player.radius
+    ) {
+      powerUps.splice(i, 1);
+
+      ghosts.forEach((ghost) => {
+        ghost.scared = true;
+
+        setTimeout(() => {
+          ghost.scared = false;
+        }, 5000);
+      });
+    }
+  }
+
+  for (let i = pellets.length - 1; 0 <= i; i--) {
     const pellet = pellets[i];
     pellet.draw();
 
@@ -494,17 +561,6 @@ function animate() {
 
   ghosts.forEach((ghost) => {
     ghost.update();
-
-    if (
-      Math.hypot(
-        ghost.position.x - player.position.x,
-        ghost.position.y - player.position.y
-      ) <
-      ghost.radius + player.radius
-    ) {
-      cancelAnimationFrame(animationId);
-      console.log("los");
-    }
 
     const collisions = [];
     boundaries.forEach((boundary) => {
