@@ -44,12 +44,14 @@ class Player {
 }
 
 class Ghost {
+  static speed = 2;
   constructor({ position, velocity, color = "red" }) {
     this.position = position;
     this.velocity = velocity;
     this.radius = 15;
     this.color = color;
     this.prevCollisions = [];
+    this.speed = 2;
   }
   draw() {
     c.beginPath();
@@ -88,9 +90,20 @@ const ghosts = [
       y: Boudary.height + Boudary.height / 2,
     },
     velocity: {
-      x: 5,
+      x: Ghost.speed,
       y: 0,
     },
+  }),
+  new Ghost({
+    position: {
+      x: Boudary.width * 6 + Boudary.width / 2,
+      y: Boudary.height * 3 + Boudary.height / 2,
+    },
+    velocity: {
+      x: Ghost.speed,
+      y: 0,
+    },
+    color: "pink",
   }),
 ];
 const player = new Player({
@@ -342,20 +355,23 @@ map.forEach((row, i) => {
 });
 
 function circleCollidesWithRectangle({ circle, rectangle }) {
+  const padding = Boudary.width / 2 - circle.radius - 1;
   return (
     circle.position.y - circle.radius + circle.velocity.y <=
-      rectangle.position.y + rectangle.height &&
+      rectangle.position.y + rectangle.height + padding &&
     circle.position.x + circle.radius + circle.velocity.x >=
-      rectangle.position.x &&
+      rectangle.position.x - padding &&
     circle.position.y + circle.radius + circle.velocity.y >=
-      rectangle.position.y &&
+      rectangle.position.y - padding &&
     circle.position.x - circle.radius + circle.velocity.x <=
-      rectangle.position.x + rectangle.width
+      rectangle.position.x + rectangle.width + padding
   );
 }
 
+let animationId;
+
 function animate() {
-  requestAnimationFrame(animate);
+  animationId = requestAnimationFrame(animate);
   c.clearRect(0, 0, canvas.width, canvas.height);
 
   if (keys.w.pressed && lastKey === "w") {
@@ -478,6 +494,18 @@ function animate() {
 
   ghosts.forEach((ghost) => {
     ghost.update();
+
+    if (
+      Math.hypot(
+        ghost.position.x - player.position.x,
+        ghost.position.y - player.position.y
+      ) <
+      ghost.radius + player.radius
+    ) {
+      cancelAnimationFrame(animationId);
+      console.log("los");
+    }
+
     const collisions = [];
     boundaries.forEach((boundary) => {
       if (
@@ -486,7 +514,7 @@ function animate() {
           circle: {
             ...ghost,
             velocity: {
-              x: 5,
+              x: ghost.speed,
               y: 0,
             },
           },
@@ -501,7 +529,7 @@ function animate() {
           circle: {
             ...ghost,
             velocity: {
-              x: -5,
+              x: -ghost.speed,
               y: 0,
             },
           },
@@ -517,7 +545,7 @@ function animate() {
             ...ghost,
             velocity: {
               x: 0,
-              y: -5,
+              y: -ghost.speed,
             },
           },
           rectangle: boundary,
@@ -532,7 +560,7 @@ function animate() {
             ...ghost,
             velocity: {
               x: 0,
-              y: 5,
+              y: ghost.speed,
             },
           },
           rectangle: boundary,
@@ -568,20 +596,20 @@ function animate() {
 
       switch (direction) {
         case "down":
-          ghost.velocity.y = 5;
+          ghost.velocity.y = ghost.speed;
           ghost.velocity.x = 0;
           break;
         case "up":
-          ghost.velocity.y = -5;
+          ghost.velocity.y = -ghost.speed;
           ghost.velocity.x = 0;
           break;
         case "right":
           ghost.velocity.y = 0;
-          ghost.velocity.x = 5;
+          ghost.velocity.x = ghost.speed;
           break;
         case "left":
           ghost.velocity.y = 0;
-          ghost.velocity.x = -5;
+          ghost.velocity.x = -ghost.speed;
           break;
       }
 
