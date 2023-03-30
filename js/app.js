@@ -1,4 +1,5 @@
 const canvas = document.querySelector("canvas");
+const scoreEl = document.getElementById("#scoreEl");
 
 const c = canvas.getContext("2d");
 
