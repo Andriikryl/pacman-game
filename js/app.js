@@ -24,7 +24,7 @@ class Player {
   constructor({ position, velocity }) {
     this.position = position;
     this.velocity = velocity;
-    this.radius = 10;
+    this.radius = 15;
   }
   draw() {
     c.beginPath();
@@ -32,6 +32,11 @@ class Player {
     c.fillStyle = "yellow";
     c.fill();
     c.closePath();
+  }
+  update() {
+    this.draw();
+    this.position.x += this.velocity.x;
+    this.position.y += this.velocity.y;
   }
 }
 
@@ -46,8 +51,8 @@ const map = [
 const boundaries = [];
 const player = new Player({
   position: {
-    x: 40,
-    y: 40,
+    x: Boudary.width + Boudary.width / 2,
+    y: Boudary.height + Boudary.height / 2,
   },
   velocity: {
     x: 0,
@@ -69,8 +74,29 @@ map.forEach((row, i) => {
   });
 });
 
-boundaries.forEach((boundary) => {
-  boundary.draw();
-});
+function animate() {
+  requestAnimationFrame(animate);
+  boundaries.forEach((boundary) => {
+    boundary.draw();
+  });
+  player.update();
+}
 
-player.draw();
+animate();
+
+addEventListener("keydown", ({ key }) => {
+  switch (key) {
+    case "w":
+      player.velocity.y = -5;
+      break;
+    case "a":
+      player.velocity.x = -5;
+      break;
+    case "s":
+      player.velocity.y = 5;
+      break;
+    case "d":
+      player.velocity.x = 5;
+      break;
+  }
+});
