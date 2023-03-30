@@ -6,6 +6,8 @@ canvas.width = innerWidth;
 canvas.height = innerHeight;
 
 class Boudary {
+  static width = 40;
+  static height = 40;
   constructor({ position }) {
     this.position = position;
     this.width = 40;
@@ -21,17 +23,22 @@ class Boudary {
 const map = [
   ["-", "-", "-", "-", "-", "-"],
   ["-", " ", " ", " ", " ", "-"],
+  ["-", " ", "-", "-", " ", "-"],
   ["-", " ", " ", " ", " ", "-"],
   ["-", "-", "-", "-", "-", "-"],
 ];
 
 const boundaries = [];
 
-map.forEach((row) => {
-  row.forEach((symbol) => {
+map.forEach((row, i) => {
+  row.forEach((symbol, j) => {
     switch (symbol) {
       case "-":
-        boundaries.push(new Boudary({ position: { x: 0, y: 0 } }));
+        boundaries.push(
+          new Boudary({
+            position: { x: Boudary.width * j, y: Boudary.height * i },
+          })
+        );
         break;
     }
   });
