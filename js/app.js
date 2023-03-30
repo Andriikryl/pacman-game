@@ -18,11 +18,25 @@ class Boudary {
   }
 }
 
-const boundary = new Boudary({
-  position: {
-    x: 0,
-    y: 0,
-  },
+const map = [
+  ["-", "-", "-", "-", "-", "-"],
+  ["-", " ", " ", " ", " ", "-"],
+  ["-", " ", " ", " ", " ", "-"],
+  ["-", "-", "-", "-", "-", "-"],
+];
+
+const boundaries = [];
+
+map.forEach((row) => {
+  row.forEach((symbol) => {
+    switch (symbol) {
+      case "-":
+        boundaries.push(new Boudary({ position: { x: 0, y: 0 } }));
+        break;
+    }
+  });
 });
 
-boundary.draw();
+boundaries.forEach((boundary) => {
+  boundary.draw();
+});
