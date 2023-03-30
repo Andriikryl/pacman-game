@@ -1,5 +1,5 @@
 const canvas = document.querySelector("canvas");
-const scoreEl = document.getElementById("#scoreEl");
+const scoreEl = document.querySelector("#scoreEl");
 
 const c = canvas.getContext("2d");
 
@@ -87,6 +87,7 @@ const keys = {
 };
 
 let lastKey = "";
+let score = 0;
 
 function createImage(src) {
   const image = new Image();
@@ -422,6 +423,8 @@ function animate() {
       pellet.radius + player.radius
     ) {
       pellets.splice(i, 1);
+      score += 10;
+      scoreEl.innerHTML = score;
     }
   }
 
