@@ -1,10 +1,11 @@
 const canvas = document.querySelector("canvas");
 const scoreEl = document.querySelector("#scoreEl");
+const massege = document.querySelector("#massege");
 
 const c = canvas.getContext("2d");
 
-canvas.width = innerWidth;
-canvas.height = innerHeight;
+canvas.width = 500;
+canvas.height = 600;
 
 class Boudary {
   static width = 40;
@@ -519,6 +520,7 @@ function animate() {
         ghosts.splice(i, 1);
       } else {
         cancelAnimationFrame(animationId);
+        massege.innerHTML = "It's looks like you loose.....";
         console.log("los");
       }
     }
@@ -527,6 +529,7 @@ function animate() {
   if (pellets.length === 0) {
     console.log("you win");
     cancelAnimationFrame(animationId);
+    massege.innerHTML = "Congrats! You win!";
   }
 
   for (let i = powerUps.length - 1; 0 <= i; i--) {

@@ -27,7 +27,29 @@
 
   body{
     background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+    animation: bgcolor 4s linear infinite;
   }
+
+  .container{
+    padding: 40px;
+    background: rgba(255, 255, 255, .2);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
+  }
+
+
+@keyframes bgcolor 
+{
+    from{filter:hue-rotate(0deg);}
+    to{filter:hue-rotate(360deg);}
+}
+
 
 
   .score{
@@ -36,5 +58,31 @@
     gap: 10px;
     align-items: center;
     color: white;
+    padding: 10px;
+    /* border: 2px black solid; */
+    max-width: 200px;
+    margin-block-end: 15px;
+    box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
   }
+
+  .conng{
+    font-size: 28px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    color: tomato;
+    font-weight: bold;
+    padding: 10px;
+    /* border: 2px black solid; */
+    width: 350px;
+    text-align: center;
+    margin-block-end: 15px;
+    box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
+  }
+
+  .flex-box{
+    display: flex;
+    justify-content: space-between;
+  }
+
 
